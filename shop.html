@@ -1,0 +1,551 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Merchant Store</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      color: #222;
+    }
+
+    header {
+      background: #111827;
+      color: white;
+      padding: 18px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    nav {
+      display: flex;
+      gap: 25px;
+      align-items: center;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 15px;
+    }
+
+    nav a:hover {
+      color: #60a5fa;
+    }
+
+    .cart-button {
+      background: #2563eb;
+      border: none;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .hero {
+      min-height: 430px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 50px 20px;
+      background: linear-gradient(135deg, #dbeafe, #eff6ff);
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      margin-bottom: 15px;
+      color: #111827;
+    }
+
+    .hero p {
+      font-size: 20px;
+      color: #4b5563;
+      margin-bottom: 25px;
+    }
+
+    .shop-button {
+      display: inline-block;
+      background: #2563eb;
+      color: white;
+      padding: 13px 25px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .shop-button:hover {
+      background: #1d4ed8;
+    }
+
+    .products-section {
+      padding: 70px 7%;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 32px;
+      margin-bottom: 40px;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .product {
+      background: white;
+      border-radius: 14px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+      transition: transform 0.2s;
+    }
+
+    .product:hover {
+      transform: translateY(-5px);
+    }
+
+    .product-icon {
+      font-size: 70px;
+      margin-bottom: 15px;
+    }
+
+    .product h3 {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .price {
+      font-size: 24px;
+      font-weight: bold;
+      color: #2563eb;
+      margin-bottom: 18px;
+    }
+
+    .add-button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      background: #111827;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .add-button:hover {
+      background: #2563eb;
+    }
+
+    .contact {
+      background: #111827;
+      color: white;
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .contact h2 {
+      margin-bottom: 15px;
+    }
+
+    footer {
+      background: #030712;
+      color: #9ca3af;
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+    }
+
+    /* Cart */
+
+    .cart {
+      position: fixed;
+      right: -420px;
+      top: 0;
+      width: 400px;
+      max-width: 100%;
+      height: 100vh;
+      background: white;
+      z-index: 200;
+      box-shadow: -5px 0 20px rgba(0,0,0,0.2);
+      transition: right 0.3s ease;
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cart.open {
+      right: 0;
+    }
+
+    .cart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+
+    .cart-header h2 {
+      font-size: 24px;
+    }
+
+    .close-cart {
+      background: none;
+      border: none;
+      font-size: 28px;
+      cursor: pointer;
+    }
+
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 15px 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .cart-item-info {
+      flex: 1;
+    }
+
+    .cart-item-info strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .quantity-controls button {
+      width: 28px;
+      height: 28px;
+      border: 1px solid #ddd;
+      background: #f3f4f6;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .remove {
+      color: #dc2626;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .cart-footer {
+      border-top: 1px solid #ddd;
+      padding-top: 20px;
+    }
+
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .checkout {
+      width: 100%;
+      padding: 14px;
+      background: #16a34a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .checkout:hover {
+      background: #15803d;
+    }
+
+    .empty {
+      text-align: center;
+      color: #6b7280;
+      margin-top: 50px;
+    }
+
+    @media (max-width: 800px) {
+      .products {
+        grid-template-columns: 1fr;
+        max-width: 450px;
+      }
+
+      nav a {
+        display: none;
+      }
+
+      .hero h1 {
+        font-size: 36px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo">My Merchant Store</div>
+
+    <nav>
+      <a href="#">Home</a>
+      <a href="#products">Products</a>
+      <a href="#contact">Contact</a>
+
+      <button class="cart-button" onclick="openCart()">
+        🛒 Cart (<span id="cart-count">0</span>)
+      </button>
+    </nav>
+  </header>
+
+
+  <section class="hero">
+    <div>
+      <h1>Welcome to My Store</h1>
+      <p>Find great products at great prices.</p>
+      <a href="#products" class="shop-button">Shop Now</a>
+    </div>
+  </section>
+
+
+  <section class="products-section" id="products">
+    <h2 class="section-title">Our Products</h2>
+
+    <div class="products">
+
+      <div class="product">
+        <div class="product-icon">📱</div>
+        <h3>Smart Phone</h3>
+        <div class="price">$299</div>
+        <button class="add-button"
+          onclick="addToCart('Smart Phone', 299)">
+          Add to Cart
+        </button>
+      </div>
+
+      <div class="product">
+        <div class="product-icon">🎧</div>
+        <h3>Wireless Headphones</h3>
+        <div class="price">$59</div>
+        <button class="add-button"
+          onclick="addToCart('Wireless Headphones', 59)">
+          Add to Cart
+        </button>
+      </div>
+
+      <div class="product">
+        <div class="product-icon">⌚</div>
+        <h3>Smart Watch</h3>
+        <div class="price">$99</div>
+        <button class="add-button"
+          onclick="addToCart('Smart Watch', 99)">
+          Add to Cart
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+
+  <section class="contact" id="contact">
+    <h2>Contact Us</h2>
+    <p>Have a question? Get in touch with My Merchant Store.</p>
+  </section>
+
+
+  <footer>
+    © 2026 My Merchant Store
+  </footer>
+
+
+  <!-- CART -->
+
+  <div class="cart" id="cart">
+
+    <div class="cart-header">
+      <h2>Your Cart</h2>
+      <button class="close-cart" onclick="closeCart()">×</button>
+    </div>
+
+    <div class="cart-items" id="cart-items">
+      <div class="empty">Your cart is empty.</div>
+    </div>
+
+    <div class="cart-footer">
+
+      <div class="cart-total">
+        <span>Total</span>
+        <span>$<span id="cart-total">0.00</span></span>
+      </div>
+
+      <button class="checkout" onclick="checkout()">
+        Checkout
+      </button>
+
+    </div>
+  </div>
+
+
+  <script>
+    let cart = [];
+
+    function addToCart(name, price) {
+
+      const existingProduct = cart.find(item => item.name === name);
+
+      if (existingProduct) {
+        existingProduct.quantity++;
+      } else {
+        cart.push({
+          name: name,
+          price: price,
+          quantity: 1
+        });
+      }
+
+      updateCart();
+      openCart();
+    }
+
+
+    function updateCart() {
+
+      const cartItems = document.getElementById("cart-items");
+      const cartCount = document.getElementById("cart-count");
+      const cartTotal = document.getElementById("cart-total");
+
+      cartItems.innerHTML = "";
+
+      let total = 0;
+      let count = 0;
+
+      if (cart.length === 0) {
+        cartItems.innerHTML =
+          '<div class="empty">Your cart is empty.</div>';
+      }
+
+      cart.forEach((item, index) => {
+
+        const itemTotal = item.price * item.quantity;
+
+        total += itemTotal;
+        count += item.quantity;
+
+        cartItems.innerHTML += `
+          <div class="cart-item">
+
+            <div class="cart-item-info">
+              <strong>${item.name}</strong>
+              $${item.price.toFixed(2)}
+
+              <div class="quantity-controls">
+                <button onclick="changeQuantity(${index}, -1)">−</button>
+                <span>${item.quantity}</span>
+                <button onclick="changeQuantity(${index}, 1)">+</button>
+              </div>
+            </div>
+
+            <button class="remove"
+              onclick="removeItem(${index})">
+              Remove
+            </button>
+
+          </div>
+        `;
+      });
+
+      cartCount.textContent = count;
+      cartTotal.textContent = total.toFixed(2);
+    }
+
+
+    function changeQuantity(index, amount) {
+
+      cart[index].quantity += amount;
+
+      if (cart[index].quantity <= 0) {
+        cart.splice(index, 1);
+      }
+
+      updateCart();
+    }
+
+
+    function removeItem(index) {
+      cart.splice(index, 1);
+      updateCart();
+    }
+
+
+    function openCart() {
+      document.getElementById("cart").classList.add("open");
+    }
+
+
+    function closeCart() {
+      document.getElementById("cart").classList.remove("open");
+    }
+
+
+    function checkout() {
+
+      if (cart.length === 0) {
+        alert("Your cart is empty.");
+        return;
+      }
+
+      let total = cart.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
+      );
+
+      alert(
+        "Checkout total: $" +
+        total.toFixed(2) +
+        "\n\nPayment integration can be added next."
+      );
+    }
+
+    updateCart();
+  </script>
+
+</body>
+</html>
